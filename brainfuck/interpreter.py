@@ -64,7 +64,7 @@ class Interpreter(object):
 
         # Open the source file and load it.
         with open(filename, 'r') as source:
-            this.source = self._clean_source_code(''.join(source.readlines()))
+            self.source = self._clean_source_code(''.join(source.readlines()))
             return
 
         # If something went wrong raise an exception.
@@ -120,22 +120,34 @@ class Interpreter(object):
         elif self.source[self.pc] == ']':
             if self.memory[self.mc] != 0:
                 self.pc = self.stack.pop() - 1
+            else:
+                self.stack.pop()
 
         self.pc += 1
 
 
 if __name__ == '__main__':
     import readline
+    import getopt
+
+    opts, args = getopt.getopt(sys.argv[1:], "if:h")
 
     interpreter = Interpreter()
-    try:
-        while True:
+    for (o, a) in opts:
+        if o == '-i':
             try:
-                line = raw_input("brainfuck> ")
-                interpreter.load_string(line)
-                interpreter.eval_code()
-            except KeyboardInterrupt:
-                print ""
-    except EOFError:
-        sys.exit(0)
+                while True:
+                    try:
+                        line = raw_input("brainfuck> ")
+                        interpreter.load_string(line)
+                        interpreter.eval_code()
+                    except KeyboardInterrupt:
+                        print ""
+            except EOFError:
+                sys.exit(0)
+        elif o == '-f':
+            interpreter.load_file(a)
+            interpreter.eval_code()
+        else:
+            print "usage: "+sys.argv[0]+" (-i | -f input_file)"
 
