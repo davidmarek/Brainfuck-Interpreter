@@ -139,6 +139,9 @@ if __name__ == '__main__':
                 while True:
                     try:
                         line = raw_input("brainfuck> ")
+                        if line == "print":
+                            print interpreter.memory.mem
+                            print interpreter.mc
                         interpreter.load_string(line)
                         interpreter.eval_code()
                     except KeyboardInterrupt:
@@ -148,6 +151,10 @@ if __name__ == '__main__':
         elif o == '-f':
             interpreter.load_file(a)
             interpreter.eval_code()
-        else:
+            sys.exit(0)
+        elif o == '-h': 
+            print "usage: "+sys.argv[0]+" (-i | -f input_file)"
+            sys.exit(0)
+    else:
             print "usage: "+sys.argv[0]+" (-i | -f input_file)"
 
